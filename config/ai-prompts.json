@@ -1,0 +1,22 @@
+[
+  {
+    "prompt": "Open the browser and review a generic AI research overview page.",
+    "intention": "Simulated AI-related browsing"
+  },
+  {
+    "prompt": "Search for synthetic data generation best practices.",
+    "intention": "Synthetic AI workflow signal"
+  },
+  {
+    "prompt": "Ask about emerging technology trends in computing and software.",
+    "intention": "Technology research prompt"
+  },
+  {
+    "prompt": "Ask for life balance tips for remote work and wellbeing.",
+    "intention": "Lifestyle guidance prompt"
+  },
+  {
+    "prompt": "Ask about the current global economy and market outlook.",
+    "intention": "Economic insight prompt"
+  }
+]
