@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Notepad",
+    "path": "C:\\Windows\\system32\\notepad.exe",
+    "arguments": "",
+    "durationSeconds": 20
+  },
+  {
+    "name": "Calculator",
+    "path": "C:\\Windows\\system32\\calc.exe",
+    "arguments": "",
+    "durationSeconds": 15
+  },
+  {
+    "name": "File Explorer",
+    "path": "explorer.exe",
+    "arguments": "",
+    "durationSeconds": 25
+  }
+]

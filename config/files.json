@@ -1,0 +1,20 @@
+[
+  {
+    "operation": "CreateTempFile",
+    "target": "sample.txt",
+    "content": "Synthetic desktop activity test file.",
+    "durationSeconds": 10
+  },
+  {
+    "operation": "ModifyTempFile",
+    "target": "sample.txt",
+    "content": "Appending safe workload generator content.",
+    "durationSeconds": 8
+  },
+  {
+    "operation": "CopyTempFile",
+    "source": "sample.txt",
+    "target": "sample-copy.txt",
+    "durationSeconds": 10
+  }
+]

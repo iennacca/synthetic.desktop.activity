@@ -1,0 +1,67 @@
+[
+  {
+    "url": "https://www.google.com",
+    "durationSeconds": 30,
+    "activityHint": "Search engine homepage"
+  },
+  {
+    "url": "https://www.youtube.com",
+    "durationSeconds": 45,
+    "activityHint": "Video browsing"
+  },
+  {
+    "url": "https://www.facebook.com",
+    "durationSeconds": 35,
+    "activityHint": "Social media feed"
+  },
+  {
+    "url": "https://www.amazon.com",
+    "durationSeconds": 40,
+    "activityHint": "Shopping portal"
+  },
+  {
+    "url": "https://www.twitter.com",
+    "durationSeconds": 30,
+    "activityHint": "News feed"
+  },
+  {
+    "url": "https://www.instagram.com",
+    "durationSeconds": 30,
+    "activityHint": "Social media browsing"
+  },
+  {
+    "url": "https://www.reddit.com",
+    "durationSeconds": 35,
+    "activityHint": "Community discussions"
+  },
+  {
+    "url": "https://www.wikipedia.org",
+    "durationSeconds": 40,
+    "activityHint": "Reference lookup"
+  },
+  {
+    "url": "https://www.microsoft.com",
+    "durationSeconds": 30,
+    "activityHint": "Browse official site"
+  },
+  {
+    "url": "https://www.linkedin.com",
+    "durationSeconds": 30,
+    "activityHint": "Professional network"
+  },
+  {
+    "url": "https://chat.openai.com",
+    "durationSeconds": 40,
+    "activityHint": "AI chat provider"
+  },
+  {
+    "url": "https://duck.ai",
+    "durationSeconds": 40,
+    "activityHint": "AI search provider"
+  },
+  {
+    "url": "https://www.perplexity.ai",
+    "durationSeconds": 40,
+    "activityHint": "AI answer engine"
+  }
+]
