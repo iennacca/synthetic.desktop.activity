@@ -1,0 +1,55 @@
+﻿{
+  "deviceProfile": {
+    "name": "Endpoint Test Node",
+    "location": "Lab",
+    "os": "Windows 10/11"
+  },
+  "businessHours": [
+    {
+      "day": "Monday",
+      "start": "09:00",
+      "end": "17:30"
+    },
+    {
+      "day": "Tuesday",
+      "start": "09:00",
+      "end": "17:30"
+    },
+    {
+      "day": "Wednesday",
+      "start": "09:00",
+      "end": "17:30"
+    },
+    {
+      "day": "Thursday",
+      "start": "09:00",
+      "end": "17:30"
+    },
+    {
+      "day": "Friday",
+      "start": "09:00",
+      "end": "17:30"
+    }
+  ],
+  "features": {
+    "browser": true,
+    "applications": true,
+    "files": true,
+    "ai": true,
+    "mouse": true,
+    "keyboard": true
+  },
+  "keyboardBurst": {
+    "minBursts": 1,
+    "maxBursts": 4,
+    "minPressesPerBurst": 2,
+    "maxPressesPerBurst": 8,
+    "cooldownSecondsMin": 120,
+    "cooldownSecondsMax": 300
+  },
+  "activityInterval": {
+    "min": 270,
+    "max": 330
+  }
+}
+
