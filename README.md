@@ -55,6 +55,7 @@ Behavior is driven by JSON files in `config/`:
 
 - `device.json` — device profile, business hours, enabled feature flags, and polling intervals.
 - `device.json` also supports keyboard burst tuning with `keyboardBurst.minBursts`, `keyboardBurst.maxBursts`, `keyboardBurst.minPressesPerBurst`, `keyboardBurst.maxPressesPerBurst`, `keyboardBurst.cooldownSecondsMin`, and `keyboardBurst.cooldownSecondsMax`.
+- `device.json` also supports mouse jiggle tuning with `mouseJiggle.moveMin`, `mouseJiggle.moveMax`, and `mouseJiggle.sleepMilliseconds`.
 - Keyboard bursts use navigation-only keys (`Tab`, `Page Up/Down`, `Home`, `End`, and arrow keys).
 - `websites.json` — a list of predefined websites to browse.
 - `applications.json` — applications to launch with safe defaults.

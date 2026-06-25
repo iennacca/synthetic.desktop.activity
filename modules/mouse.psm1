@@ -10,7 +10,13 @@ function Start-MouseJiggle {
     try {
         Add-Type -AssemblyName System.Windows.Forms | Out-Null
         $current = [System.Windows.Forms.Cursor]::Position
-        $moves = Get-Random -Minimum 1 -Maximum 4
+        $moveMin = if ($DeviceConfig.mouseJiggle.moveMin) { [int]$DeviceConfig.mouseJiggle.moveMin } else { 5 }
+        $moveMax = if ($DeviceConfig.mouseJiggle.moveMax) { [int]$DeviceConfig.mouseJiggle.moveMax } else { 10 }
+        $sleepMilliseconds = if ($DeviceConfig.mouseJiggle.sleepMilliseconds) { [int]$DeviceConfig.mouseJiggle.sleepMilliseconds } else { 250 }
+
+        if ($moveMax -lt $moveMin) { $moveMax = $moveMin }
+
+        $moves = Get-Random -Minimum $moveMin -Maximum ($moveMax + 1)
 
         for ($i = 0; $i -lt $moves; $i++) {
             $deltaX = Get-Random -Minimum -10 -Maximum 10
@@ -20,7 +26,7 @@ function Start-MouseJiggle {
                 [Math]::Max(0, $current.Y + $deltaY)
             )
             [System.Windows.Forms.Cursor]::Position = $newPosition
-            Start-Sleep -Milliseconds 250
+            Start-Sleep -Milliseconds $sleepMilliseconds
         }
 
         Write-ActivityLog -Message "Mouse jiggled $moves times." -Level 'Information'
