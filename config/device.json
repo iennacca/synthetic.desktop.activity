@@ -40,16 +40,16 @@
     "keyboard": true
   },
   "keyboardBurst": {
-    "minBursts": 1,
-    "maxBursts": 4,
-    "minPressesPerBurst": 2,
-    "maxPressesPerBurst": 8,
-    "cooldownSecondsMin": 120,
-    "cooldownSecondsMax": 300
+    "minBursts": 10,
+    "maxBursts": 50,
+    "minPressesPerBurst": 10,
+    "maxPressesPerBurst": 50,
+    "cooldownSecondsMin": 60,
+    "cooldownSecondsMax": 120
   },
   "activityInterval": {
-    "min": 270,
-    "max": 330
+    "min": 60,
+    "max": 120
   }
 }
 
