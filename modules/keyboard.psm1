@@ -59,7 +59,6 @@ function Start-KeyboardBurst {
         if ($cooldownMax -lt $cooldownMin) { $cooldownMax = $cooldownMin }
 
         $keys = @(
-            [byte]0x09, # TAB
             [byte]0x21, # PAGE UP
             [byte]0x22, # PAGE DOWN
             [byte]0x23, # END
