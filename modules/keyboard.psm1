@@ -11,9 +11,121 @@ namespace SyntheticDesktop {
     public static class KeyboardInterop {
         [DllImport("user32.dll", SetLastError = true)]
         public static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
     }
 }
 '@
+    }
+}
+
+function Get-KeyboardBurstApp {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)] [pscustomobject] $DeviceConfig,
+        [Parameter()] [array] $Applications
+    )
+
+    $keyboardBurstApp = $DeviceConfig.keyboardBurst.app
+    if (-not $keyboardBurstApp) {
+        return $null
+    }
+
+    $appGroup = $keyboardBurstApp.group
+    if ($appGroup -and $Applications) {
+        $groupedApp = $Applications | Where-Object { $_.group -eq $appGroup } | Select-Object -First 1
+        if ($groupedApp) {
+            return $groupedApp
+        }
+
+        Write-ActivityLog -Message "No application matched keyboard burst group '$appGroup'; falling back to the configured app entry." -Level 'Warning'
+    }
+
+    return $keyboardBurstApp
+}
+
+function Start-KeyboardBurstApp {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)] [pscustomobject] $App
+    )
+
+    if (-not (Test-Path $App.path)) {
+        Write-ActivityLog -Message "Keyboard burst application not found: $($App.path)" -Level 'Warning'
+        return $null
+    }
+
+    try {
+        $process = if ($App.arguments) {
+            Start-Process -FilePath $App.path -ArgumentList $App.arguments -PassThru
+        }
+        else {
+            Start-Process -FilePath $App.path -PassThru
+        }
+
+        if (-not $process) {
+            return $null
+        }
+
+        $windowHandle = [IntPtr]::Zero
+        for ($attempt = 0; $attempt -lt 20; $attempt++) {
+            $process.Refresh()
+            if ($process.MainWindowHandle -ne 0) {
+                $windowHandle = [IntPtr]$process.MainWindowHandle
+                break
+            }
+
+            Start-Sleep -Milliseconds 250
+        }
+
+        if ($windowHandle -ne [IntPtr]::Zero) {
+            [SyntheticDesktop.KeyboardInterop]::ShowWindowAsync($windowHandle, 9) | Out-Null
+            [SyntheticDesktop.KeyboardInterop]::SetForegroundWindow($windowHandle) | Out-Null
+        }
+        else {
+            Write-ActivityLog -Message "Launched $($App.name) but could not resolve a foreground window handle." -Level 'Warning'
+        }
+
+        return $process
+    }
+    catch {
+        Write-ActivityLog -Message "Failed to launch keyboard burst application $($App.name): $_" -Level 'Warning'
+        return $null
+    }
+}
+
+function Stop-KeyboardBurstApp {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)] [System.Diagnostics.Process] $Process,
+        [Parameter(Mandatory)] [string] $AppName
+    )
+
+    try {
+        $Process.Refresh()
+        if ($Process.HasExited) {
+            Write-ActivityLog -Message "$AppName exited naturally after the keyboard burst." -Level 'Information'
+            return
+        }
+
+        if ($Process.CloseMainWindow()) {
+            if ($Process.WaitForExit(5000)) {
+                Write-ActivityLog -Message "Closed keyboard burst application: $AppName" -Level 'Information'
+                return
+            }
+        }
+
+        Stop-Process -Id $Process.Id -Force -ErrorAction SilentlyContinue
+        Write-ActivityLog -Message "Force-closed keyboard burst application: $AppName" -Level 'Information'
+    }
+    catch {
+        Write-ActivityLog -Message "Failed to close keyboard burst application ${AppName}: $_" -Level 'Warning'
     }
 }
 
@@ -31,7 +143,8 @@ function Invoke-SpoofKeyPress {
 function Start-KeyboardBurst {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory)] [pscustomobject] $DeviceConfig
+        [Parameter(Mandatory)] [pscustomobject] $DeviceConfig,
+        [Parameter()] [array] $Applications = @()
     )
 
     Write-Verbose 'Keyboard burst activity invoked.'
@@ -43,6 +156,9 @@ function Start-KeyboardBurst {
     }
 
     Write-ActivityLog -Message 'Executing keyboard burst activity.' -Level 'Information'
+
+    $keyboardBurstProcess = $null
+    $keyboardBurstApp = $null
 
     try {
         Initialize-KeyboardInterop
@@ -57,6 +173,17 @@ function Start-KeyboardBurst {
         if ($burstMax -lt $burstMin) { $burstMax = $burstMin }
         if ($pressMax -lt $pressMin) { $pressMax = $pressMin }
         if ($cooldownMax -lt $cooldownMin) { $cooldownMax = $cooldownMin }
+
+        $keyboardBurstApp = Get-KeyboardBurstApp -DeviceConfig $DeviceConfig -Applications $Applications
+        if ($keyboardBurstApp) {
+            Write-ActivityLog -Message "Launching keyboard burst application: $($keyboardBurstApp.name)" -Level 'Information'
+            $keyboardBurstProcess = Start-KeyboardBurstApp -App $keyboardBurstApp
+
+            if (-not $keyboardBurstProcess) {
+                Write-ActivityLog -Message 'Keyboard burst application could not be started; aborting burst activity.' -Level 'Warning'
+                return
+            }
+        }
 
         $keys = @(
             [byte]0x21, # PAGE UP
@@ -94,6 +221,11 @@ function Start-KeyboardBurst {
     }
     catch {
         Write-ActivityLog -Message "Keyboard burst failed: $_" -Level 'Warning'
+    }
+    finally {
+        if ($keyboardBurstProcess -and $keyboardBurstApp) {
+            Stop-KeyboardBurstApp -Process $keyboardBurstProcess -AppName $keyboardBurstApp.name
+        }
     }
 }
 

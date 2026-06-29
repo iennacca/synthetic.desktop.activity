@@ -106,7 +106,7 @@ function Start-Workload {
                 Start-MouseJiggle -DeviceConfig $DeviceConfig
             }
             'Keyboard' {
-                Start-KeyboardBurst -DeviceConfig $DeviceConfig
+                Start-KeyboardBurst -DeviceConfig $DeviceConfig -Applications $Applications
             }
             'Idle' {
                 Start-IdleCycle -DeviceConfig $DeviceConfig
